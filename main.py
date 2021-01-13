@@ -13,6 +13,7 @@ def main():
         command_executor=env.WEBDRIVER_URL, 
         desired_capabilities=DesiredCapabilities.FIREFOX    
     )
+    driver.set_window_size(1024, 768)
 
     print(str(datetime.now()) + " | Try Connecting To Web Driver")
     driver.get(env.ROUTER_IP)

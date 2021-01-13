@@ -31,18 +31,25 @@ def restart_wan(driver):
     )
     driver.find_element_by_xpath('//*[@id="wanInstTable_1_1"]').click()
     driver.find_element_by_xpath('//*[@id="WanSwitch"]').click()
-    driver.find_element_by_xpath('//*[@id="ButtonApply"]').click()
+    actionButton = driver.find_element_by_id('ButtonApply')
 
-    time.sleep(3)
+    driver.execute_script("arguments[0].scrollIntoView();", actionButton)
+    actionButton.click()
+
+    time.sleep(2)
 
     WebDriverWait(driver, 20).until(
         EC.presence_of_element_located((By.ID, "wanInstTable_tbl"))
     )
     driver.find_element_by_xpath('//*[@id="wanInstTable_1_1"]').click()
     driver.find_element_by_xpath('//*[@id="WanSwitch"]').click()
-    driver.find_element_by_xpath('//*[@id="ButtonApply"]').click()
+    actionButton = driver.find_element_by_id('ButtonApply')
 
-    time.sleep(3)
+    driver.execute_script("arguments[0].scrollIntoView();", actionButton)
+    actionButton.click()
+
+    time.sleep(5)
+
 
 def get_current_ip(driver):
     driver.switch_to.default_content()
