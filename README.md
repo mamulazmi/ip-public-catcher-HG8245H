@@ -1,5 +1,10 @@
 # IP Public Catcher HG8245H and DDNS Cloudflare
 
+## requirement
+- selenium firefox webdriver ( prefer use docker )
+- cloudflare + domain
+- of course HG8245H Router
+
 ```
 pip3 install -r requirement.txt
 ```
