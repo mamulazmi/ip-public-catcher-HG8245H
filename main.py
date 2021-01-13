@@ -1,6 +1,7 @@
 import sys
 import IPy
 import env
+import timeit
 import cloudflare
 import router_selenium
 from time import sleep
@@ -9,11 +10,15 @@ from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 def main():
+    webdriver_options = webdriver.FirefoxOptions()
+    webdriver_options.add_argument('--headless')
     driver = webdriver.Remote(
         command_executor=env.WEBDRIVER_URL, 
-        desired_capabilities=DesiredCapabilities.FIREFOX    
+        desired_capabilities=DesiredCapabilities.FIREFOX,
+        options=webdriver_options 
     )
     driver.set_window_size(1024, 768)
+    driver.set_window_position(0, 0)
 
     print(str(datetime.now()) + " | Try Connecting To Web Driver")
     driver.get(env.ROUTER_IP)
@@ -21,15 +26,13 @@ def main():
     router_selenium.login(driver)
     print(str(datetime.now()) + " | Login Router Success")
 
+    if len(sys.argv) > 1 and sys.argv[1] == "restart":
+        print(str(datetime.now()) + " | Restart WAN for Reset IP")
+        router_selenium.restart_wan(driver)
 
     print(str(datetime.now()) + " | Get Current IP Process")
     ip = IPy.IP(router_selenium.get_current_ip(driver))
     print(str(datetime.now()) + " | Current IP " + str(ip))
-
-
-    if len(sys.argv) > 1 and sys.argv[1] == "restart":
-        print(str(datetime.now()) + " | Restart WAN for Reset IP")
-        router_selenium.restart_wan(driver)
 
     i = 1
     while ip.iptype() == "PRIVATE":
@@ -60,4 +63,7 @@ def main():
     
 if __name__ == "__main__":
     print(" =================================== ")
+    start = timeit.default_timer()
     main()
+    stop = timeit.default_timer()
+    print(str(datetime.now()) + " | Runtime : " + str(stop - start))
