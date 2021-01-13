@@ -1,7 +1,7 @@
 # IP Public Catcher HG8245H and DDNS Cloudflare
 
 ## requirement
-- selenium firefox webdriver ( prefer use docker )
+- selenium chrome webdriver
 - cloudflare + domain
 - of course HG8245H Router
 

@@ -7,16 +7,18 @@ import router_selenium
 from time import sleep
 from datetime import datetime
 from selenium import webdriver
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 def main():
-    webdriver_options = webdriver.FirefoxOptions()
+    webdriver_options = webdriver.ChromeOptions()
     webdriver_options.add_argument('--headless')
-    driver = webdriver.Remote(
-        command_executor=env.WEBDRIVER_URL, 
-        desired_capabilities=DesiredCapabilities.FIREFOX,
-        options=webdriver_options 
-    )
+    webdriver_options.add_argument('disable-infobars')
+    webdriver_options.add_argument("--disable-extensions")
+    webdriver_options.add_argument("--disable-gpu")
+    webdriver_options.add_argument("--disable-dev-shm-usage")
+    webdriver_options.add_argument("--no-sandbox")
+    webdriver_options.add_argument("--window-size=1024,768")
+        
+    driver = webdriver.Chrome(options=webdriver_options)
     driver.set_window_size(1024, 768)
     driver.set_window_position(0, 0)
 
@@ -30,18 +32,16 @@ def main():
         print(str(datetime.now()) + " | Restart WAN for Reset IP")
         router_selenium.restart_wan(driver)
 
-    print(str(datetime.now()) + " | Get Current IP Process")
     ip = IPy.IP(router_selenium.get_current_ip(driver))
     print(str(datetime.now()) + " | Current IP " + str(ip))
 
     i = 1
     while ip.iptype() == "PRIVATE":
-
-        router_selenium.restart_wan(driver)
         print(str(datetime.now()) + " | Restart WAN Attempt " + str(i))
-
+        router_selenium.restart_wan(driver)
+        
         ip = IPy.IP(router_selenium.get_current_ip(driver))
-        print(str(datetime.now()) + " | Current IP " + str(ip) + " Attempt " + str(i))
+        print(str(datetime.now()) + " | Current IP " + str(ip))
 
         i = i + 1
 
@@ -50,7 +50,6 @@ def main():
 
     driver.close()
 
-    print(str(datetime.now()) + " | Get Cloudflare Current IP Process")
     cloudflareCurrentIp = cloudflare.get_current_ip()
 
     if str(ip) != cloudflareCurrentIp['ip']:
