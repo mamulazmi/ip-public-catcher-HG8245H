@@ -35,7 +35,7 @@ class Router:
         self.ROUTER_USERNAME = ROUTER_USERNAME
         self.ROUTER_PASSWORD = ROUTER_PASSWORD
 
-        self.timeout_sleep = 3
+        self.timeout_sleep = 2
 
     def login(self):
         self.driver.get(self.ROUTER_HTTP)
