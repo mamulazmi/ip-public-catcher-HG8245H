@@ -1,16 +1,19 @@
+import os
 import sys
 import IPy
-import env
 import timeit
-from library.router import Router
-from library.cloudflare import Cloudflare
 from time import sleep
 from datetime import datetime
+from library.router import Router
+from library.cloudflare import Cloudflare
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
 
 def main():
-    print(str(datetime.now()) + " | Try Connecting To Web Driver")
-    router = Router(env.ROUTER_HTTP, env.ROUTER_USERNAME, env.ROUTER_PASSWORD)
-
+    router = Router(
+        os.getenv("ROUTER_HTTP"), os.getenv("ROUTER_USERNAME"), os.getenv("ROUTER_PASSWORD"))
+    
     router.login()
     print(str(datetime.now()) + " | Login Router Success")
 
@@ -36,7 +39,14 @@ def main():
 
     del router
 
-    cloudflare = Cloudflare(env.CF_EMAIL, env.CF_API_KEY, env.CF_ZONE_ID, env.CF_RECORD_ID, env.CF_DOMAIN_NAME, env.CF_PROXIED)
+    cloudflare = Cloudflare(
+            os.getenv("CF_EMAIL"), 
+            os.getenv("CF_API_KEY"), 
+            os.getenv("CF_ZONE_ID"), 
+            os.getenv("CF_RECORD_ID"), 
+            os.getenv("CF_DOMAIN_NAME"), 
+            os.getenv("CF_PROXIED")
+        )
 
     if str(ip) != cloudflare.get_current_ip()['ip']:
         cloudflare.change_domain_ip(str(ip))
@@ -47,7 +57,6 @@ def main():
     print(str(datetime.now()) + " | IP " + str(ip))
     
 if __name__ == "__main__":
-    print(" =================================== ")
     start = timeit.default_timer()
     main()
     stop = timeit.default_timer()
