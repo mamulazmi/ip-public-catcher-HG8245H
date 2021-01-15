@@ -1,5 +1,5 @@
+import os
 import IPy
-from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys  
@@ -35,54 +35,38 @@ class Router:
         self.ROUTER_USERNAME = ROUTER_USERNAME
         self.ROUTER_PASSWORD = ROUTER_PASSWORD
 
-        self.timeout_sleep = 2
-
     def login(self):
         self.driver.get(self.ROUTER_HTTP)
 
         self.driver.find_element_by_id("txt_Username").send_keys(self.ROUTER_USERNAME)
         self.driver.find_element_by_id("txt_Password").send_keys(self.ROUTER_PASSWORD)
-
         self.driver.find_element_by_id("button").click()
 
-        sleep(self.timeout_sleep)
 
     def logout(self):
-        
         self.driver.get(
             self.ROUTER_HTTP + '/index.asp'
         )
         
         self.driver.find_element_by_id('headerLogoutText').click()
 
-        sleep(self.timeout_sleep)
-
     def switch_wan_enabled(self):
-
         self.driver.get(
             self.ROUTER_HTTP + '/html/bbsp/wan/wan.asp'
         )
 
-        WebDriverWait(self.driver, 20).until(
+        WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located((By.ID, "wanInstTable_tbl"))
         )
         self.driver.find_element_by_id('wanInstTable_1_1').click()
         self.driver.find_element_by_id('WanSwitch').click()
-        actionButton = self.driver.find_element_by_id('ButtonApply')
-
-        self.driver.execute_script("arguments[0].scrollIntoView();", actionButton)
-        actionButton.click()
-
-        sleep(self.timeout_sleep)
+        self.driver.find_element_by_id('ButtonApply').click()
 
     def restart_wan(self):
-
         self.switch_wan_enabled()
         
         self.switch_wan_enabled()
             
-        sleep(self.timeout_sleep)
-
 
     def get_current_ip(self):
         
@@ -90,10 +74,18 @@ class Router:
             self.ROUTER_HTTP + '/html/bbsp/waninfo/waninfo.asp'
         )
 
-        WebDriverWait(self.driver, 20).until(
+        WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located((By.ID, "IPTable"))
         )
 
+        status = self.driver.find_element_by_css_selector("#record_1 > td:nth-child(2)").text
+
+        if status == "Disconnected":
+            self.switch_wan_enabled()
+            return self.get_current_ip()
+        elif status == "Connecting":
+            return self.get_current_ip()
+        
         return IPy.IP(self.driver.find_element_by_css_selector('#record_1 > td:nth-child(3)').text)
 
     def __del__(self):
