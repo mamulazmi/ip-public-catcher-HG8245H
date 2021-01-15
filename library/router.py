@@ -19,7 +19,7 @@ class Router:
                             'protected_media_identifier': 2, 'app_banner': 2, 'site_engagement': 2, 
                             'durable_storage': 2}}
         webdriver_options.add_experimental_option('prefs', prefs)
-        # webdriver_options.add_argument('--headless')
+        webdriver_options.add_argument('--headless')
         webdriver_options.add_argument('disable-infobars')
         webdriver_options.add_argument("--disable-extensions")
         webdriver_options.add_argument("--disable-gpu")
@@ -29,7 +29,7 @@ class Router:
             
         self.driver = webdriver.Chrome(options=webdriver_options)
         self.driver.set_window_size(1024, 768)
-        # self.driver.set_window_position(0, 0)
+        self.driver.set_window_position(0, 0)
         
         self.ROUTER_HTTP = ROUTER_HTTP
         self.ROUTER_USERNAME = ROUTER_USERNAME
