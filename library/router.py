@@ -42,6 +42,9 @@ class Router:
         self.driver.find_element_by_id("txt_Password").send_keys(self.ROUTER_PASSWORD)
         self.driver.find_element_by_id("button").click()
 
+        WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located((By.ID, "main"))
+        )
 
     def logout(self):
         self.driver.get(
