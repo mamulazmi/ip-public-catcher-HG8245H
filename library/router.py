@@ -53,7 +53,7 @@ class Router:
             self.ROUTER_HTTP + '/index.asp'
         )
         
-        self.driver.find_element_by_xpath('//*[@id="headerLogoutText"]').click()
+        self.driver.find_element_by_id('headerLogoutText').click()
 
         sleep(self.timeout_sleep)
 
@@ -66,8 +66,8 @@ class Router:
         WebDriverWait(self.driver, 20).until(
             EC.presence_of_element_located((By.ID, "wanInstTable_tbl"))
         )
-        self.driver.find_element_by_xpath('//*[@id="wanInstTable_1_1"]').click()
-        self.driver.find_element_by_xpath('//*[@id="WanSwitch"]').click()
+        self.driver.find_element_by_id('wanInstTable_1_1').click()
+        self.driver.find_element_by_id('WanSwitch').click()
         actionButton = self.driver.find_element_by_id('ButtonApply')
 
         self.driver.execute_script("arguments[0].scrollIntoView();", actionButton)
@@ -94,7 +94,7 @@ class Router:
             EC.presence_of_element_located((By.ID, "IPTable"))
         )
 
-        return IPy.IP(self.driver.find_element_by_xpath('//*[@id="record_1"]/td[3]').text)
+        return IPy.IP(self.driver.find_element_by_css_selector('#record_1 > td:nth-child(3)').text)
 
     def __del__(self):
         self.driver.close()

@@ -11,7 +11,7 @@ class Cloudflare:
         self.CF_ZONE_ID = CF_ZONE_ID
         self.CF_RECORD_ID = CF_RECORD_ID
         self.CF_DOMAIN_NAME = CF_DOMAIN_NAME
-        self.CF_PROXIED = CF_PROXIED
+        self.CF_PROXIED = bool(CF_PROXIED)
 
 
     def get_current_ip(self):
@@ -37,7 +37,7 @@ class Cloudflare:
                 'type': 'A',
                 'name': self.CF_DOMAIN_NAME,
                 'content': ip,
-                'proxied': bool(self.CF_PROXIED)
+                'proxied': self.CF_PROXIED
             }
         )
 
