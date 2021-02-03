@@ -53,6 +53,10 @@ class Router:
         
         self.driver.find_element_by_id('headerLogoutText').click()
 
+        WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located((By.ID, "main_wrapper"))
+        )
+
     def switch_wan_enabled(self):
         self.driver.get(
             self.ROUTER_HTTP + '/html/bbsp/wan/wan.asp'

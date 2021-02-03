@@ -25,16 +25,16 @@ def main():
     oldIp = ip = IPy.IP(router.get_current_ip())
     print(str(datetime.now()) + " | Current IP : " + str(ip))
 
-    reset = (len(sys.argv) > 1 and sys.argv[1] == "reset")
-
+    restart = (len(sys.argv) > 1 and sys.argv[1] == "restart")
+    
     i = 1       
-    while (ip.iptype() == "PRIVATE" or reset):
+    while (ip.iptype() == "PRIVATE" or restart):
         router.restart_wan()
 
         ip = IPy.IP(router.get_current_ip())
         print(str(datetime.now()) + " | Restart WAN #" + str(i) + " Attempt | Obtain IP : " + str(ip))
 
-        reset = False
+        restart = False
         i = i + 1
 
     router.logout()
@@ -61,7 +61,7 @@ def main():
     print(str(datetime.now()) + " | New IP " + str(ip))
 
     stop = timeit.default_timer()
-    print(str(datetime.now()) + " | Runtime : " + str(stop - start) + " seconds")
+    print(str(datetime.now()) + " | Runtime : " + str(round(stop - start, 2)) + " seconds")
 
 if __name__ == "__main__":
     main()
