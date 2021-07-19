@@ -42,23 +42,24 @@ def main():
 
     del router
 
-    cloudflare = Cloudflare(
-        os.getenv("CF_EMAIL"), 
-        os.getenv("CF_API_KEY"), 
-        os.getenv("CF_ZONE_ID"), 
-        os.getenv("CF_RECORD_ID"), 
-        os.getenv("CF_DOMAIN_NAME"), 
-        os.getenv("CF_PROXIED")
-    )
+    if os.getenv("ROUTER_PASSWORD") == True:
+        cloudflare = Cloudflare(
+            os.getenv("CF_EMAIL"), 
+            os.getenv("CF_API_KEY"), 
+            os.getenv("CF_ZONE_ID"), 
+            os.getenv("CF_RECORD_ID"), 
+            os.getenv("CF_DOMAIN_NAME"), 
+            os.getenv("CF_PROXIED")
+        )
 
-    if str(ip) != cloudflare.get_current_ip()['ip']:
-        cloudflare.change_domain_ip(str(ip))
-        print(str(datetime.now()) + " | Success Changed Domain IP")
-    else:
-        print(str(datetime.now()) + " | Domain IP Same")
-        
-    print(str(datetime.now()) + " | Old IP " + str(oldIp))
-    print(str(datetime.now()) + " | New IP " + str(ip))
+        if str(ip) != cloudflare.get_current_ip()['ip']:
+            cloudflare.change_domain_ip(str(ip))
+            print(str(datetime.now()) + " | Success Changed Domain IP")
+        else:
+            print(str(datetime.now()) + " | Domain IP Same")
+            
+        print(str(datetime.now()) + " | Old IP " + str(oldIp))
+        print(str(datetime.now()) + " | New IP " + str(ip))
 
     stop = timeit.default_timer()
     print(str(datetime.now()) + " | Runtime : " + str(round(stop - start, 2)) + " seconds")
