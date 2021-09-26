@@ -42,7 +42,7 @@ def main():
 
     del router
 
-    if os.getenv("ROUTER_PASSWORD") == True:
+    if bool(os.getenv("CF_ENABLE")) == True:
         cloudflare = Cloudflare(
             os.getenv("CF_EMAIL"), 
             os.getenv("CF_API_KEY"), 

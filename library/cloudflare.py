@@ -49,7 +49,6 @@ class Cloudflare:
             method=method, 
             json=json, 
             headers={
-                'X-Auth-Key': self.CF_API_KEY,
-                'X-Auth-Email': self.CF_EMAIL
+                'Authorization': 'Bearer ' + self.CF_API_KEY,
             }
         )
