@@ -1,5 +1,3 @@
-import sys
-import json
 import requests
 from IPy import IP
 
@@ -37,7 +35,7 @@ class Cloudflare:
                 'type': 'A',
                 'name': self.CF_DOMAIN_NAME,
                 'content': ip,
-                'proxied': self.CF_PROXIED
+                'proxied': bool(self.CF_PROXIED)
             }
         )
 

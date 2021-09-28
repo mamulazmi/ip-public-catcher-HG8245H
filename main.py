@@ -4,6 +4,7 @@ import IPy
 import timeit
 from time import sleep
 from datetime import datetime
+from library.telnet import Telnet
 from library.router import Router
 from library.cloudflare import Cloudflare
 from dotenv import load_dotenv, find_dotenv
@@ -13,34 +14,49 @@ load_dotenv(find_dotenv())
 def main():
     start = timeit.default_timer()
 
-    router = Router(
-        os.getenv("ROUTER_HTTP"), 
-        os.getenv("ROUTER_USERNAME"), 
-        os.getenv("ROUTER_PASSWORD")
+    telnet = Telnet(
+        os.getenv("TELNET_HOST"), 
+        os.getenv("TELNET_USERNAME"), 
+        os.getenv("TELNET_PASSWORD")
     )
+
+    oldIp = ip = telnet.get_current_ip()
+
+    if (IPy.IP(ip) == "PRIVATE" or bool(os.getenv("TELNET_ENABLE")) == False):
+
+        telnet.logout()
+
+        router = Router(
+            os.getenv("ROUTER_HTTP"), 
+            os.getenv("ROUTER_USERNAME"), 
+            os.getenv("ROUTER_PASSWORD")
+        )
+        
+        router.login()
+        print(str(datetime.now()) + " | Login Router Success")
+
+        oldIp = ip = IPy.IP(router.get_current_ip())
+        print(str(datetime.now()) + " | Current IP : " + str(ip))
+
+        restart = (len(sys.argv) > 1 and sys.argv[1] == "restart")
+        
+        i = 1       
+        while (ip.iptype() == "PRIVATE" or restart):
+            router.restart_wan()
+
+            ip = IPy.IP(router.get_current_ip())
+            print(str(datetime.now()) + " | Restart WAN #" + str(i) + " Attempt | Obtain IP : " + str(ip))
+
+            restart = False
+            i = i + 1
+
+        router.logout()
+        print(str(datetime.now()) + " | Logout Router Success")
+
+        del router
     
-    router.login()
-    print(str(datetime.now()) + " | Login Router Success")
-
-    oldIp = ip = IPy.IP(router.get_current_ip())
-    print(str(datetime.now()) + " | Current IP : " + str(ip))
-
-    restart = (len(sys.argv) > 1 and sys.argv[1] == "restart")
-    
-    i = 1       
-    while (ip.iptype() == "PRIVATE" or restart):
-        router.restart_wan()
-
-        ip = IPy.IP(router.get_current_ip())
-        print(str(datetime.now()) + " | Restart WAN #" + str(i) + " Attempt | Obtain IP : " + str(ip))
-
-        restart = False
-        i = i + 1
-
-    router.logout()
-    print(str(datetime.now()) + " | Logout Router Success")
-
-    del router
+    else:
+        telnet.logout()
 
     if bool(os.getenv("CF_ENABLE")) == True:
         cloudflare = Cloudflare(
