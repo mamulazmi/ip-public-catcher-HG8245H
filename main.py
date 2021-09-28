@@ -14,15 +14,20 @@ load_dotenv(find_dotenv())
 def main():
     start = timeit.default_timer()
 
-    telnet = Telnet(
-        os.getenv("TELNET_HOST"), 
-        os.getenv("TELNET_USERNAME"), 
-        os.getenv("TELNET_PASSWORD")
-    )
+    if bool(os.getenv("TELNET_ENABLE")) == True:
 
-    oldIp = ip = telnet.get_current_ip()
+        telnet = Telnet(
+            os.getenv("TELNET_HOST"), 
+            os.getenv("TELNET_USERNAME"), 
+            os.getenv("TELNET_PASSWORD")
+        )
 
-    if (IPy.IP(ip) == "PRIVATE" or bool(os.getenv("TELNET_ENABLE")) == False):
+        oldIp = ip = telnet.get_current_ip()
+
+    else:
+        oldIp = ip = "127.0.0.1"
+
+    if IPy.IP(ip) == "PRIVATE":
 
         telnet.logout()
 
