@@ -27,7 +27,7 @@ def main():
     else:
         oldIp = ip = "127.0.0.1"
 
-    if IPy.IP(ip) == "PRIVATE":
+    if IPy.IP(ip).iptype() == "PRIVATE":
 
         telnet.logout()
 
